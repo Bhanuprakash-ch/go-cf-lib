@@ -18,6 +18,26 @@ package wrapper
 
 import "github.com/trustedanalytics/go-cf-lib/types"
 
+func (w *CfAPIWrapper) GetAppSummary(id string) (*types.CfAppSummary, error) {
+	res, err := w.rest.GetAppSummary(id)
+	return res, err
+}
+
+func (w *CfAPIWrapper) GetUserProvidedService(guid string) (*types.CfUserProvidedServiceResource, error) {
+	res, err := w.rest.GetUserProvidedService(guid)
+	return res, err
+}
+
+func (w *CfAPIWrapper) GetSpaceRoutesForHostname(spaceGUID, hostname string) (*types.CfRoutesResponse, error) {
+	res, err := w.rest.GetSpaceRoutesForHostname(spaceGUID, hostname)
+	return res, err
+}
+
+func (w *CfAPIWrapper) GetAppsFromRoute(routeGUID string) (*types.CfAppsResponse, error) {
+	res, err := w.rest.GetAppsFromRoute(routeGUID)
+	return res, err
+}
+
 func (w *CfAPIWrapper) GetServiceOfName(name string) (*types.CfServiceResource, error) {
 	res, err := w.rest.GetServiceOfName(name)
 	return res, err
