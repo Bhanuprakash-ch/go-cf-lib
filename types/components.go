@@ -9,14 +9,14 @@ const (
 )
 
 type Component struct {
-	GUID         string
-	Name         string
-	Type         ComponentType
-	DependencyOf []string
-	Clone        bool
+	GUID         string        `json:"GUID"`
+	Name         string        `json:"name"`
+	Type         ComponentType `json:"type"`
+	DependencyOf []string      `json:"dependencyOf"`
+	Clone        bool          `json:"clone"`
 }
 
 type ComponentClone struct {
-	Component Component
-	CloneGUID string
+	Component Component `json:"component"`
+	CloneGUID string    `json:"cloneGUID"`
 }
