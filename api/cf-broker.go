@@ -37,21 +37,21 @@ func (c *CfAPI) RegisterBroker(brokerName string, brokerURL string, username str
 	if err != nil {
 		msg := fmt.Sprintf("Failed to prepare request for: %v %v", MethodPost, address)
 		log.Error(msg)
-		return InternalServerError{Context: msg}
+		return types.InternalServerError{Context: msg}
 	}
 	response, err := c.Do(request)
 
 	if err != nil {
 		msg := fmt.Sprintf("Failed to register service broker: %v", err.Error())
 		log.Error(msg)
-		return InternalServerError{Context: msg}
+		return types.InternalServerError{Context: msg}
 	}
 
 	if response.StatusCode != http.StatusCreated {
 		msg := fmt.Sprintf("Failed to register service broker: Status code %d, Error %v", response.StatusCode,
 			helpers.ReaderToString(response.Body))
 		log.Error(msg)
-		return InternalServerError{Context: msg}
+		return types.InternalServerError{Context: msg}
 	}
 
 	return nil
@@ -69,21 +69,21 @@ func (c *CfAPI) UpdateBroker(brokerGUID string, brokerURL string, username strin
 	if err != nil {
 		msg := fmt.Sprintf("Failed to prepare request for: %v %v", MethodPost, address)
 		log.Error(msg)
-		return InternalServerError{Context: msg}
+		return types.InternalServerError{Context: msg}
 	}
 	response, err := c.Do(request)
 
 	if err != nil {
 		msg := fmt.Sprintf("Failed to update service broker: %v", err.Error())
 		log.Error(msg)
-		return InternalServerError{Context: msg}
+		return types.InternalServerError{Context: msg}
 	}
 
 	if response.StatusCode != http.StatusOK {
 		msg := fmt.Sprintf("Failed to update service broker: Status code %d, Error %v", response.StatusCode,
 			helpers.ReaderToString(response.Body))
 		log.Error(msg)
-		return InternalServerError{Context: msg}
+		return types.InternalServerError{Context: msg}
 	}
 
 	return nil
@@ -95,21 +95,21 @@ func (c *CfAPI) GetBrokers(brokerName string) (*types.CfServiceBrokerResources, 
 	if err != nil {
 		msg := fmt.Sprintf("Failed to get available service brokers: %v", err.Error())
 		log.Error(msg)
-		return nil, InternalServerError{Context: msg}
+		return nil, types.InternalServerError{Context: msg}
 	}
 
 	if response.StatusCode != http.StatusOK {
 		msg := fmt.Sprintf("Failed to get available service brokers: Status code %d, Error %v",
 			response.StatusCode, helpers.ReaderToString(response.Body))
 		log.Error(msg)
-		return nil, InternalServerError{Context: msg}
+		return nil, types.InternalServerError{Context: msg}
 	}
 
 	brokers := new(types.CfServiceBrokerResources)
 	if err := json.NewDecoder(response.Body).Decode(brokers); err != nil {
 		msg := fmt.Sprintf("Failed to parse broker list response: %v", err.Error())
 		log.Error(msg)
-		return nil, InternalServerError{Context: msg}
+		return nil, types.InternalServerError{Context: msg}
 	}
 	return brokers, nil
 }

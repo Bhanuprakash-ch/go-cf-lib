@@ -115,6 +115,11 @@ func (w *CfAPIWrapper) CreateApplicationClone(sourceAppGUID, spaceGUID string, p
 	return destApp, nil
 }
 
+func (w *CfAPIWrapper) CreateUserProvidedServiceInstance(req *types.CfUserProvidedService) (*types.CfUserProvidedServiceResource, error) {
+	res, err := w.rest.CreateUserProvidedServiceInstance(req)
+	return res, err
+}
+
 func (w *CfAPIWrapper) CopyBits(sourceID string, destID string, asyncError chan error) {
 	w.rest.CopyBits(sourceID, destID, asyncError)
 }

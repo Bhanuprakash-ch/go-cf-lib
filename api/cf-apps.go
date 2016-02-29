@@ -36,11 +36,11 @@ func (c *CfAPI) CreateApp(app types.CfApp) (*types.CfAppResource, error) {
 
 	if err != nil {
 		log.Errorf("Could not create new app: [%v]", err)
-		return nil, InternalServerError{}
+		return nil, types.InternalServerError{}
 	}
 	if resp.StatusCode != http.StatusCreated {
 		log.Errorf("CreateApp failed. Response from CC: [%v]", helpers.ReaderToString(resp.Body))
-		return nil, InternalServerError{}
+		return nil, types.InternalServerError{}
 	}
 
 	toReturn := new(types.CfAppResource)
@@ -55,9 +55,9 @@ func (c *CfAPI) GetAppSummary(id string) (*types.CfAppSummary, error) {
 	resp, err := c.getEntity(address, "application summary")
 	if err != nil {
 		switch err {
-		case EntityNotFoundError{}:
+		case types.EntityNotFoundError{}:
 			log.Errorf("Application %v not found", id)
-			return nil, InternalServerError{Context: err.Error()}
+			return nil, types.InternalServerError{Context: err.Error()}
 		default:
 			log.Errorf("Failed to get application summary: %v", err.Error())
 			return nil, err
@@ -76,7 +76,7 @@ func (c *CfAPI) GetAppSummary(id string) (*types.CfAppSummary, error) {
 
 func (c *CfAPI) AssertAppHasRoutes(appSummary *types.CfAppSummary) error {
 	if len(appSummary.Routes) == 0 {
-		return InternalServerError{Context: "Reference app has no route associated"}
+		return types.InternalServerError{Context: "Reference app has no route associated"}
 	}
 	return nil
 }
@@ -121,11 +121,11 @@ func (c *CfAPI) CopyBits(sourceID string, destID string, asyncError chan error) 
 
 	if err != nil {
 		log.Errorf("Could not copy bits: [%v]", err)
-		asyncError <- InvalidInputError{}
+		asyncError <- types.InvalidInputError{}
 		return
 	} else if resp.StatusCode != http.StatusCreated {
 		log.Errorf("CopyBits failed. Response from CC: [%v]", helpers.ReaderToString(resp.Body))
-		asyncError <- InternalServerError{}
+		asyncError <- types.InternalServerError{}
 		return
 	}
 
@@ -133,13 +133,13 @@ func (c *CfAPI) CopyBits(sourceID string, destID string, asyncError chan error) 
 	json.NewDecoder(resp.Body).Decode(jobResponse)
 	for jobResponse.Entity.Status != "finished" {
 		if resp, err = c.Get(c.BaseAddress + jobResponse.Meta.URL); err != nil {
-			asyncError <- CcJobFailedError{err.Error()}
+			asyncError <- types.CcJobFailedError{err.Error()}
 			return
 		}
 		json.NewDecoder(resp.Body).Decode(jobResponse)
 		log.Debugf("Copy_bits job check: [%v]", jobResponse.Entity.Status)
 		if jobResponse.Entity.Status == "failed" {
-			asyncError <- CcJobFailedError{jobResponse.Entity.Error}
+			asyncError <- types.CcJobFailedError{jobResponse.Entity.Error}
 			return
 		}
 		if jobResponse.Entity.Status == "queued" {
@@ -160,10 +160,10 @@ func (c *CfAPI) RestageApp(appGUID string) error {
 	resp, err := c.Do(request)
 	if err != nil {
 		log.Errorf("Could not restage app: [%v]", err)
-		return CcRestageFailedError{err.Error()}
+		return types.CcRestageFailedError{err.Error()}
 	} else if resp.StatusCode != http.StatusCreated {
 		log.Errorf("RestageApp finished with error: %v", helpers.ReaderToString(resp.Body))
-		return CcRestageFailedError{"Unexpected HTTP status returned from CC"}
+		return types.CcRestageFailedError{"Unexpected HTTP status returned from CC"}
 	}
 
 	restagedApp := new(types.CfAppResource)
@@ -181,10 +181,10 @@ func (c *CfAPI) UpdateApp(app *types.CfAppResource) error {
 	resp, err := c.Do(request)
 	if err != nil {
 		log.Errorf("Could not update app: [%v]", err)
-		return CcUpdateFailedError{err.Error()}
+		return types.CcUpdateFailedError{err.Error()}
 	} else if resp.StatusCode != http.StatusCreated {
 		log.Errorf("UpdateApp finished with error: %v", helpers.ReaderToString(resp.Body))
-		return CcUpdateFailedError{"Unexpected HTTP status returned from CC:" + resp.Status}
+		return types.CcUpdateFailedError{"Unexpected HTTP status returned from CC:" + resp.Status}
 	}
 	return nil
 }
@@ -204,7 +204,7 @@ func (c *CfAPI) StartApp(app *types.CfAppResource) error {
 			return err
 		}
 	case <-time.After(5 * time.Minute):
-		return TimeoutOccurredError{}
+		return types.TimeoutOccurredError{}
 	}
 	return nil
 }
@@ -218,7 +218,7 @@ func (c *CfAPI) waitForAppRunning(appGUID string, asyncErr chan error) {
 		resp, err := c.Get(address)
 		if err != nil {
 			log.Errorf("Could not get app instances: [%v]", err)
-			asyncErr <- CcGetInstancesFailedError{err.Error()}
+			asyncErr <- types.CcGetInstancesFailedError{err.Error()}
 			return
 		} else if resp.StatusCode != http.StatusOK {
 			log.Debugf("waitForAppRunning finished with error: %v", helpers.ReaderToString(resp.Body))
@@ -228,7 +228,7 @@ func (c *CfAPI) waitForAppRunning(appGUID string, asyncErr chan error) {
 
 		decodedInstances := map[string]types.CfAppInstance{}
 		if err := json.NewDecoder(resp.Body).Decode(&decodedInstances); err != nil {
-			asyncErr <- CcGetInstancesFailedError{err.Error()}
+			asyncErr <- types.CcGetInstancesFailedError{err.Error()}
 			return
 		}
 

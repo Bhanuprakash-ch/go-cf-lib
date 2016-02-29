@@ -32,17 +32,17 @@ func (c *CfAPI) CreateServiceInstance(req *types.CfServiceInstanceCreateRequest)
 	marshalled, err := json.Marshal(req)
 	if err != nil {
 		log.Errorf("Could not marshal CfServiceInstanceCreateRequest: [%+v]", req)
-		return nil, InternalServerError{Context: "Problem with marshalling request data"}
+		return nil, types.InternalServerError{Context: "Problem with marshalling request data"}
 	}
 	resp, err := c.Post(address, "application/json", bytes.NewReader(marshalled))
 	if err != nil {
 		log.Errorf("Could not create service instance: [%v]", err)
-		return nil, InternalServerError{Context: "Cloud Foundry API was not able to create service instance"}
+		return nil, types.InternalServerError{Context: "Cloud Foundry API was not able to create service instance"}
 	}
 	if !(resp.StatusCode == http.StatusCreated || resp.StatusCode == http.StatusAccepted) {
 		// CF 2.07 returns HTTP 201, CF 2.22 returns HTTP 202
 		log.Errorf("createServiceInstance failed. Response from CC: [%v]", helpers.ReaderToString(resp.Body))
-		return nil, InternalServerError{Context: "Unacceptable response code from Cloud Foundry API after trying to create service instance"}
+		return nil, types.InternalServerError{Context: "Unacceptable response code from Cloud Foundry API after trying to create service instance"}
 	}
 
 	toReturn := new(types.CfServiceInstanceCreateResponse)
@@ -58,16 +58,16 @@ func (c *CfAPI) CreateServiceBinding(req *types.CfServiceBindingCreateRequest) (
 	marshalled, err := json.Marshal(req)
 	if err != nil {
 		log.Errorf("Could not marshal CfServiceInstanceCreateRequest: [%+v]", req)
-		return nil, InternalServerError{Context: "Problem with marshalling request data"}
+		return nil, types.InternalServerError{Context: "Problem with marshalling request data"}
 	}
 	resp, err := c.Post(address, "application/json", bytes.NewReader(marshalled))
 	if err != nil {
 		log.Errorf("Could not create service binding: [%v]", err)
-		return nil, InternalServerError{Context: "Cloud Foundry API was not able to create service binding"}
+		return nil, types.InternalServerError{Context: "Cloud Foundry API was not able to create service binding"}
 	}
 	if resp.StatusCode != http.StatusCreated {
 		log.Errorf("createServiceBinding failed. Response from CC: [%v]", helpers.ReaderToString(resp.Body))
-		return nil, InternalServerError{Context: "Unacceptable response code from Cloud Foundry API after trying to create service binding"}
+		return nil, types.InternalServerError{Context: "Unacceptable response code from Cloud Foundry API after trying to create service binding"}
 	}
 
 	toReturn := new(types.CfServiceBindingCreateResponse)
@@ -107,11 +107,11 @@ func (c *CfAPI) GetServiceOfName(name string) (*types.CfServiceResource, error) 
 
 	if err != nil {
 		log.Errorf("Could not get service of name provided: [%v]", err)
-		return nil, InternalServerError{Context: "Request CF for service with given name, failed"}
+		return nil, types.InternalServerError{Context: "Request CF for service with given name, failed"}
 	}
 	if resp.StatusCode != http.StatusOK {
 		log.Errorf("Problem while getting service of specified name: [%v]", err)
-		return nil, InternalServerError{Context: "Wrong status code from CF API after trying to get specific service"}
+		return nil, types.InternalServerError{Context: "Wrong status code from CF API after trying to get specific service"}
 	}
 
 	resource := new(types.CfServicesResources)
@@ -141,7 +141,7 @@ func (c *CfAPI) PurgeService(serviceID string, serviceName string, servicePlansU
 	if err != nil {
 		msg := fmt.Sprintf("Could not delete service %s: [%v]", serviceName, err)
 		log.Error(msg)
-		return InternalServerError{Context: msg}
+		return types.InternalServerError{Context: msg}
 	}
 	log.Debugf("Delete service %s response code: %d", serviceName, resp.StatusCode)
 
@@ -151,7 +151,7 @@ func (c *CfAPI) PurgeService(serviceID string, serviceName string, servicePlansU
 		msg := fmt.Sprintf("Delete %s failed. Response from CC: (%d) [%v]",
 			serviceName, resp.StatusCode, helpers.ReaderToString(resp.Body))
 		log.Error(msg)
-		return InternalServerError{Context: msg}
+		return types.InternalServerError{Context: msg}
 	}
 	return nil
 }

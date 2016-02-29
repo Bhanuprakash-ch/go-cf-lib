@@ -32,17 +32,17 @@ func (c *CfAPI) CreateUserProvidedServiceInstance(req *types.CfUserProvidedServi
 	marshalled, err := json.Marshal(req)
 	if err != nil {
 		log.Errorf("Could not marshal CfUserProvidedService: [%+v]", req)
-		return nil, InternalServerError{Context: "Problem with marshalling request data"}
+		return nil, types.InternalServerError{Context: "Problem with marshalling request data"}
 	}
 	resp, err := c.Post(address, "application/json", bytes.NewReader(marshalled))
 	if err != nil {
 		log.Errorf("Could not create user provided service instance: [%v]", err)
-		return nil, InternalServerError{Context: "Cloud Foundry API was not able to create user provided service instance"}
+		return nil, types.InternalServerError{Context: "Cloud Foundry API was not able to create user provided service instance"}
 	}
 	if !(resp.StatusCode == http.StatusCreated || resp.StatusCode == http.StatusAccepted) {
 		// CF 2.07 returns HTTP 201, CF 2.22 returns HTTP 202
 		log.Errorf("createUserProvidedServiceInstance failed. Response from CC: [%v]", helpers.ReaderToString(resp.Body))
-		return nil, InternalServerError{Context: "Unacceptable response code from Cloud Foundry API after trying to create service instance"}
+		return nil, types.InternalServerError{Context: "Unacceptable response code from Cloud Foundry API after trying to create service instance"}
 	}
 
 	toReturn := new(types.CfUserProvidedServiceResource)
@@ -59,11 +59,11 @@ func (c *CfAPI) GetUserProvidedService(guid string) (*types.CfUserProvidedServic
 
 	if err != nil {
 		log.Errorf("Could not get user provided service of guid provided: [%v]", err)
-		return nil, InternalServerError{Context: "Request CF for service with given name, failed"}
+		return nil, types.InternalServerError{Context: "Request CF for service with given name, failed"}
 	}
 	if resp.StatusCode != http.StatusOK {
 		log.Errorf("Problem while getting user provided service with guid: [%v]", err)
-		return nil, InternalServerError{Context: "Wrong status code from CF API after trying to get specific user provided service"}
+		return nil, types.InternalServerError{Context: "Wrong status code from CF API after trying to get specific user provided service"}
 	}
 
 	resource := new(types.CfUserProvidedServiceResource)
@@ -81,16 +81,16 @@ func (c *CfAPI) CreateUserProvidedServiceBinding(req *types.CfServiceBindingCrea
 	marshalled, err := json.Marshal(req)
 	if err != nil {
 		log.Errorf("Could not marshal CfServiceInstanceCreateRequest: [%+v]", req)
-		return nil, InternalServerError{Context: "Problem with marshalling request data"}
+		return nil, types.InternalServerError{Context: "Problem with marshalling request data"}
 	}
 	resp, err := c.Post(address, "application/json", bytes.NewReader(marshalled))
 	if err != nil {
 		log.Errorf("Could not create service binding: [%v]", err)
-		return nil, InternalServerError{Context: "Cloud Foundry API was not able to create service binding"}
+		return nil, types.InternalServerError{Context: "Cloud Foundry API was not able to create service binding"}
 	}
 	if resp.StatusCode != http.StatusCreated {
 		log.Errorf("createServiceBinding failed. Response from CC: [%v]", helpers.ReaderToString(resp.Body))
-		return nil, InternalServerError{Context: "Unacceptable response code from Cloud Foundry API after trying to create service binding"}
+		return nil, types.InternalServerError{Context: "Unacceptable response code from Cloud Foundry API after trying to create service binding"}
 	}
 
 	toReturn := new(types.CfServiceBindingCreateResponse)
