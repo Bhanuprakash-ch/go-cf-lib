@@ -27,6 +27,12 @@ func ReaderToString(reader io.Reader) string {
 	return buf.String()
 }
 
+func ReaderToBytes(reader io.Reader) []byte {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(reader)
+	return buf.Bytes()
+}
+
 func FirstNonEmpty(elems chan error, size int) error {
 	for i := 0; i < size; i++ {
 		if elem := <-elems; elem != nil {
