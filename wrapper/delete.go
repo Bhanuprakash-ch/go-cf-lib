@@ -75,6 +75,7 @@ func (w *CfAPIWrapper) DeleteRoutes(appGUID string, errorsCh chan error, doneWai
 	appSummary, err := w.rest.GetAppSummary(appGUID)
 	if err != nil {
 		errorsCh <- err
+		return
 	}
 	routes := appSummary.Routes
 
