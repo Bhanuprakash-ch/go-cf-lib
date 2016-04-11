@@ -226,7 +226,7 @@ var _ = Describe("Cf apps", func() {
 			It("should return results", func() {
 				httpmock.RegisterResponder("GET", "/v2/apps/guid/service_bindings", resp)
 
-				bindings, err := sut.GetAppBindigs("guid")
+				bindings, err := sut.GetAppBindings("guid")
 
 				Expect(err).NotTo(HaveOccurred())
 				Expect(bindings).NotTo(BeNil())
@@ -239,7 +239,7 @@ var _ = Describe("Cf apps", func() {
 			It("should return error", func() {
 				httpmock.RegisterResponder("GET", "/v2/apps/guid/service_bindings", resp)
 
-				bindings, err := sut.GetAppBindigs("guid")
+				bindings, err := sut.GetAppBindings("guid")
 
 				Expect(err).To(HaveOccurred())
 				Expect(bindings).To(BeNil())
@@ -251,7 +251,7 @@ var _ = Describe("Cf apps", func() {
 			It("should return error", func() {
 				httpmock.RegisterResponder("GET", "/v2/apps/guid/service_bindings", resp)
 
-				bindings, err := sut.GetAppBindigs("guid")
+				bindings, err := sut.GetAppBindings("guid")
 
 				Expect(err).To(HaveOccurred())
 				Expect(bindings).To(BeNil())
@@ -263,7 +263,7 @@ var _ = Describe("Cf apps", func() {
 			It("should return error", func() {
 				httpmock.RegisterResponder("GET", "/v2/apps/guid/service_bindings", resp)
 
-				bindings, err := sut.GetAppBindigs("guid")
+				bindings, err := sut.GetAppBindings("guid")
 
 				Expect(err).To(HaveOccurred())
 				Expect(bindings).To(BeNil())
