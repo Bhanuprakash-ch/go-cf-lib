@@ -23,7 +23,7 @@
 
 function run_tests_in {
     cd ./${1}
-    go test -coverprofile=coverage.out
+    go test -race -coverprofile=coverage.out
     if [[ $? -eq 0 ]]
     then
         go tool cover -func=coverage.out
