@@ -57,6 +57,7 @@ var _ = Describe("Cf create", func() {
 				},
 			},
 		}
+		params := make(map[string]interface{})
 		getAppSummaryResp := responderGenerator(200, appSummary)
 
 		createSvcInstanceRes := types.CfServiceInstanceCreateResponse{
@@ -84,7 +85,7 @@ var _ = Describe("Cf create", func() {
 				errorCh := make(chan error, 1)
 				resultsCh := make(chan types.ComponentClone, 1)
 
-				go sut.CreateServiceClone("space_guid", comp, suffix, resultsCh, errorCh, &wg)
+				go sut.CreateServiceClone("space_guid", params, comp, suffix, resultsCh, errorCh, &wg)
 
 				err := <-errorCh
 				Expect(err).ShouldNot(HaveOccurred())
@@ -107,7 +108,7 @@ var _ = Describe("Cf create", func() {
 				errorCh := make(chan error, 1)
 				resultsCh := make(chan types.ComponentClone, 1)
 
-				go sut.CreateServiceClone("space_guid", notBound, suffix, resultsCh, errorCh, &wg)
+				go sut.CreateServiceClone("space_guid", params, notBound, suffix, resultsCh, errorCh, &wg)
 
 				err := <-errorCh
 				Expect(err).Should(HaveOccurred())
@@ -121,7 +122,7 @@ var _ = Describe("Cf create", func() {
 				errorCh := make(chan error, 1)
 				resultsCh := make(chan types.ComponentClone, 1)
 
-				go sut.CreateServiceClone("space_guid", comp, suffix, resultsCh, errorCh, &wg)
+				go sut.CreateServiceClone("space_guid", params, comp, suffix, resultsCh, errorCh, &wg)
 
 				err := <-errorCh
 				Expect(err).Should(HaveOccurred())
@@ -136,7 +137,7 @@ var _ = Describe("Cf create", func() {
 				errorCh := make(chan error, 1)
 				resultsCh := make(chan types.ComponentClone, 1)
 
-				go sut.CreateServiceClone("space_guid", comp, suffix, resultsCh, errorCh, &wg)
+				go sut.CreateServiceClone("space_guid", params, comp, suffix, resultsCh, errorCh, &wg)
 
 				err := <-errorCh
 				Expect(err).Should(HaveOccurred())
