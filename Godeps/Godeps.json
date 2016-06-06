@@ -20,10 +20,6 @@
 			"Rev": "145b10d659265440f062c31ea15326166bae56ee"
 		},
 		{
-			"ImportPath": "github.com/juju/errors",
-			"Rev": "1b5e39b83d1835fa480e0c2ddefb040ee82d58b3"
-		},
-		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
 			"Rev": "281073eb9eb092240d33ef253c404f1cca550309"
 		},
@@ -40,6 +36,10 @@
 			"ImportPath": "github.com/onsi/gomega",
 			"Comment": "v1.0-77-g28f13bc",
 			"Rev": "28f13bc54cf0f72e3fa395ba9d3added0b3b849c"
+		},
+		{
+			"ImportPath": "github.com/signalfx/golib/errors",
+			"Rev": "93fae626851610c921ba9dfef122b6216d013903"
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
